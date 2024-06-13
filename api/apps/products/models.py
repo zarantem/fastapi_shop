@@ -15,6 +15,7 @@ class Products(Base):
     price: Mapped[float]
     article: Mapped[str]
     image: Mapped[str]
+    body: Mapped[str]
     category_id: Mapped[int] = mapped_column(ForeignKey('categories.id'))
     brand_id: Mapped[int] = mapped_column(ForeignKey('brands.id'))
     category: Mapped['Categories'] = relationship(Categories, lazy="joined")

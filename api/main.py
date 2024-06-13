@@ -1,10 +1,43 @@
 from fastapi import FastAPI
-from config.settings import settings
+from config.settings import Base, engine
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from api.apps.brands.routers import app as brand_app
+from api.apps.categories.routers import app as category_app
+from api.apps.products.routers import app as product_app
 
 
 app = FastAPI()
 
 
-@app.get('/')
-def test():
-    return {'db_name':settings.db_url}
+app.mount('/api/static', StaticFiles(directory='static'), name='static')
+
+origin_cors = ['*']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origin_cors,
+    allow_methods=['*'],
+    allow_headers=['*']
+                   )
+
+
+@app.on_event('startup')
+async def startup():
+    async with engine.begin() as conn:
+        await conn.run_async(Base.metadata.create_all())
+
+
+app.include_router(
+    product_app
+)
+
+
+app.include_router(
+    brand_app
+)
+
+
+app.include_router(
+    category_app
+)

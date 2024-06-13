@@ -1,12 +1,10 @@
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-
-
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    db_url:str
+    db_url: str
 
 
     class Config:
@@ -14,7 +12,7 @@ class Settings(BaseSettings):
         env_file_encoding = "utf-8"
 
 
-settings: Settings = Settings()
+settings:Settings = Settings()
 
 
 engine = create_async_engine(
