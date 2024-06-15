@@ -22,10 +22,15 @@ app.add_middleware(
                    )
 
 
-@app.on_event('startup')
+@app.on_event("startup")
 async def startup():
-    async with engine.connect() as conn:
-        await conn.run_async(Base.metadata.create_all())
+    await engine.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await engine.disconnect()
+
 
 
 app.include_router(
