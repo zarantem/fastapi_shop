@@ -1,11 +1,10 @@
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy import create_engine
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
     db_url: str
-
 
     class Config:
         env_file = "./env/.env"
@@ -15,16 +14,12 @@ class Settings(BaseSettings):
 settings = Settings()
 
 
-engine = create_async_engine(
-    settings.db_url
-)
+engine = create_engine(settings.db_url)
 
 
 async def get_session():
-    async_session = async_sessionmaker(engine, expire_on_commit=False)
-    async with async_session() as session:
-        yield session
-        await session.close()
+    session = sessionmaker(engine, expire_on_commit=False)
+    return session
 
 
 class Base(DeclarativeBase):

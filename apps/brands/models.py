@@ -3,7 +3,7 @@ from sqlalchemy.orm import mapped_column, Mapped
 
 
 class Brands(Base):
-    __tablename__='brands'
+    __tablename__ = "brands"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)

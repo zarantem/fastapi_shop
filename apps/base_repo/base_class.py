@@ -14,14 +14,12 @@ class BaseService(Generic[ModelType]):
         self.table = model
         self.db_session = db_session
 
-
     async def get_list(self, limit: Optional[int] = None):
         async with self.db_session as session:
             query = await session.execute(
                 select(self.table).limit(limit).order_by(-self.table.id.desc())
             )
             return query.scalars().all()
-
 
     async def get_one(self, id):
         async with self.db_session as session:
@@ -33,7 +31,6 @@ class BaseService(Generic[ModelType]):
             raise HTTPException(status_code=404, detail="Page is not found")
         return id_item
 
-
     async def create(self, data):
         async with self.db_session as session:
             item = self.table(**data.dict())
@@ -41,18 +38,19 @@ class BaseService(Generic[ModelType]):
             await session.commit()
         return item
 
-
     async def update(self, data):
         async with self.db_session as session:
             await session.execute(
-                update(self.table),[data.dict()],
+                update(self.table),
+                [data.dict()],
             )
             await session.commit()
         return await self.get_one(data.id)
 
-
     async def delete(self, id):
         async with self.db_session as session:
-            await session.execute(delete(self.table).filter(self.table.id == id))
+            await session.execute(
+                delete(self.table).filter(self.table.id == id)
+            )
             await session.commit()
         return None

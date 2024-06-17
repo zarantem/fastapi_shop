@@ -26,6 +26,5 @@ class ProductInfo(BaseModel):
     category: CategoryInfo
     brand: BrandInfo
 
-
     class Config:
         from_attributes = True

@@ -10,39 +10,32 @@ from apps.categories.routers import app as product_app
 app = FastAPI()
 
 
-app.mount('/api/static', StaticFiles(directory='static'), name='static')
+app.mount("/api/static", StaticFiles(directory="static"), name="static")
 
-origin_cors = ['*']
+origin_cors = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origin_cors,
-    allow_methods=['*'],
-    allow_headers=['*']
-                   )
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")
-async def startup():
-    await engine.connect()
+def startup():
+    engine.connect()
 
 
 @app.on_event("shutdown")
-async def shutdown():
-    await engine.disconnect()
+def shutdown():
+    engine.disconnect()
 
 
-
-app.include_router(
-    product_app
-)
+app.include_router(product_app)
 
 
-app.include_router(
-    brand_app
-)
+app.include_router(brand_app)
 
 
-app.include_router(
-    category_app
-)
+app.include_router(category_app)
